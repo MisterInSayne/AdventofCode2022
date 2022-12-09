@@ -15,20 +15,16 @@ try {
 
 var instruction = data.split("\r\n");
 
-var part1 = 0;
-var part2 = 0;
-
 var ropelength = 10;
 
-var posR = [];
+var posR = new Array(ropelength);
 for(var i = 0; i < ropelength; i++){ posR[i] = [0,0]; }
 var tagsp1 = {};
 var tagsp2 = {};
 var vecs = {'U':[1,0],'D':[-1,0],'L':[0,-1],'R':[0,1]};
 for(var i = 0; i < instruction.length; i++){
-	var [dir, steps] = instruction[i].split(' ');
-	steps = Number(steps);
-	var vec = vecs[dir];
+	var steps = Number(instruction[i].slice(2));
+	var vec = vecs[instruction[i].slice(0,1)];
 	for(var s = 0; s < steps; s++){
 		posR[0][0] += vec[0];
 		posR[0][1] += vec[1];
@@ -44,8 +40,6 @@ for(var i = 0; i < instruction.length; i++){
 		tagsp2[posR[ropelength-1][0]+"-"+posR[ropelength-1][1]] = true;
 	}
 }
-part1 = Object.keys(tagsp1).length;
-part2 = Object.keys(tagsp2).length;
 
-console.log("Answer for part 1; "+part1);
-console.log("Answer for part 2; "+part2);
+console.log("Answer for part 1; "+Object.keys(tagsp1).length);
+console.log("Answer for part 2; "+Object.keys(tagsp2).length);
