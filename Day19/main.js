@@ -57,7 +57,7 @@ function findFastest(items, robots, blueprint, cap, minutes){
 			if(b == 3 && robots[3]==0){
 				if((lowest[0] <= minutes-time && lowest[1] < geo) || (lowest[0] < minutes-time && lowest[1] <= geo)){
 					lowest = [minutes-time, geo];
-					if(_DEBUG)console.log("New lowest: "+lowest);
+					if(_DEBUG)console.log("New lowest: "+lowest+" with "+robots);
 				}
 			}
 			if(geo > highest)highest = geo;
@@ -67,18 +67,19 @@ function findFastest(items, robots, blueprint, cap, minutes){
 	return highest;
 }
 
-function findWorst(blueprint){
-	var time = 0;
+function findWorst(blueprint, gens=1){
+	var time = (blueprint[0][0]+1)*(gens-1);
 	var ore = 0;
+	var oreG = gens;
 	var clay = 0;
 	var clayG = 0;
 	var obs = 0;
 	var obsG = 0;
 	while(obs < blueprint[3][2] || ore < blueprint[3][0]){
-		if(ore > blueprint[2][0] && clay > blueprint[2][1] && obs+Math.max(0,obsG*(blueprint[3][2]-ore)) < blueprint[3][2]){
+		if(ore > blueprint[2][0] && clay > blueprint[2][1] && obs+(obsG*Math.max(0,Math.floor((blueprint[3][0]-ore)/oreG))) < blueprint[3][2]){
 			ore -= blueprint[2][0]; clay -= blueprint[2][1]; obsG++;
-		}else if(ore > blueprint[1][0] && clay+Math.max(0,clayG*(blueprint[2][1]-ore)) < blueprint[2][1]){ ore -= blueprint[1][0]; clayG++;}
-		ore++;
+		}else if(ore > blueprint[1][0] && clay+(clayG*Math.max(0,Math.floor((blueprint[2][0]-ore)/oreG))) < blueprint[2][1]){ ore -= blueprint[1][0]; clayG++;}
+		ore += oreG;
 		clay += clayG;
 		obs += obsG;
 		time++;
@@ -99,7 +100,9 @@ function getBestBluePrint(minutes, bpMax=blueprints.length){
 		var t0 = performance.now();
 		var cap = [Math.max(blueprints[i][1][0], blueprints[i][2][0], blueprints[i][3][0]), blueprints[i][2][1], blueprints[i][3][2], 100000000000];
 		//console.log(cap);
-		var slowest = findWorst(blueprints[i]);
+		
+		var slowest = Math.min(findWorst(blueprints[i]), findWorst(blueprints[i], 2));
+		
 		lowest = [minutes-slowest,(minutes-slowest)]
 		if(_DEBUG)console.log("Slowest that will produce is in "+slowest+" minutes.");
 		var output = findFastest([0, 0, 0, 0], [1, 0, 0, 0], blueprints[i], cap, minutes);
