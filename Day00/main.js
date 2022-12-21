@@ -5,20 +5,20 @@ console.clear();
 
 var files = ['Input.txt', 'Example.txt'];
 var file = 1;
-var data = null;
+var inputData = null;
 console.log("Using: "+files[file]);
 try {
-	data = fs.readFileSync(files[file], 'utf8');
+	inputData = fs.readFileSync(files[file], 'utf8');
 } catch (err) {
 	console.error(err)
 }
 
-var pair = data.split("\r\n");
+var data = inputData.split("\r\n");
 
 
 var part1 = 0;
 var part2 = 0;
-for(var i = 0; i < pair.length; i++){
+for(var i = 0; i < data.length; i++){
 	
 }
 

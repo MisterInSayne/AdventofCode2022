@@ -31,9 +31,10 @@ for(var i = 0; i < inputData.length; i++){
 }
 
 //console.log(valves);
+console.log("Generating maps and data.");
 
 function findFastestRoute(fromV, toV, steps, prev){
-	if(steps < 1)return 50;
+	if(steps < 1)return 30;
 	//if(links[fromV] != undefined && links[fromV][toV] != undefined)return links[fromV][toV];
 	if(valves[fromV].links.includes(toV))return 1;
 	var shortest = []
@@ -42,23 +43,25 @@ function findFastestRoute(fromV, toV, steps, prev){
 		if(prev.includes(valves[fromV].links[l]))continue;
 		shortest.push(findFastestRoute(valves[fromV].links[l],toV,steps-1,prev.slice()));
 	}
-	if(shortest.length == 0)return 50;
+	if(shortest.length == 0)return 30;
 	shortest.sort(function(a, b) {return a - b;});
 	return shortest[0]+1;
 }
 
 var links = {};
 var valvenames = Object.keys(valves);
-
+console.log("Generating fastest route map.");
 
 for(var i = 0; i < valvenames.length; i++){
 	links[valvenames[i]] = {};
 	for(var v = 0; v < valvenames.length; v++){
 		if(i == v)continue;
-		links[valvenames[i]][valvenames[v]] = findFastestRoute(valvenames[i],valvenames[v],50,[]);
+		links[valvenames[i]][valvenames[v]] = findFastestRoute(valvenames[i],valvenames[v],30,[]);
 	}
 }
 //console.log(links);
+
+
 
 var valvesWithFlow = [];
 for(var i = 0; i < valvenames.length; i++){
@@ -66,7 +69,7 @@ for(var i = 0; i < valvenames.length; i++){
 	valvesWithFlow.push(valvenames[i]);
 }
 
-
+console.log("Generating Nodes.");
 var Nodes = {};
 
 
@@ -83,7 +86,7 @@ function getAllNodes(v){
 	return node;
 }
 
-console.log("Generating Nodes.");
+
 
 for(var i = 0; i < valvesWithFlow.length; i++){
 	Nodes[valvesWithFlow[i]] = getAllNodes(valvesWithFlow[i]);
